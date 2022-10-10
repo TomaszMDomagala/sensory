@@ -38,3 +38,6 @@ celerybeat-schedule.*
 # Environments 
 .sensory_env
 sensory_env/
+
+# VScode
+.vscode
