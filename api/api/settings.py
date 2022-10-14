@@ -19,7 +19,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sensors.apps.SensorsConfig',
     'users.apps.UsersConfig',
-    "social_django",
+    'social_django',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
