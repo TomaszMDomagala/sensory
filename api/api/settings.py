@@ -10,7 +10,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -59,6 +58,8 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.github.GithubOAuth2",
 ]
+
+AUTH_USER_MODEL = "users.CustomUser"
 
 SOCIAL_AUTH_GITHUB_KEY = "af352a8b3c1cb0e6103e"
 SOCIAL_AUTH_GITHUB_SECRET = "7139c02fa7d877a6bc5c7d5c21dca10734d0cfcf"
