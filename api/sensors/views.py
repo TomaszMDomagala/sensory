@@ -15,13 +15,13 @@ class SensorsListApiView(APIView):
 
     def post(self, request, *args, **kwargs):
         data = {
-            'temperature': request.data.get('task'),
-            'humidity': request.data.get('task'),
-            'pressure': request.data.get('task'),
-            'light': request.data.get('task'),
-            'moisture': request.data.get('task'),
-            'slave_ip': request.data.get('task'),
-            'author': request.data.get('author')
+            'temperature': round(request.data.get('temperature'), 2),
+            'humidity': round(request.data.get('humidity'), 2),
+            'pressure': round(request.data.get('pressure'), 2),
+            'light': round(request.data.get('light'), 2),
+            'moisture': request.data.get('moisture'),
+            'slave_ip': request.data.get('slave_ip')
+            # 'author': request.data.get('author')
         }
         serializer = SensorsSerializer(data=data)
         if serializer.is_valid():

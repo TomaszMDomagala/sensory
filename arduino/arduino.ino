@@ -15,7 +15,7 @@ Adafruit_BME280 bme;
 const char* ssid = "UPC3739675";
 const char* password = "Zz3dvtzkhxw7";
 
-String serverName = "http://192.168.0.164:8000/api/post";
+String serverName = "http://192.168.0.101:8005/sensors/api";
 
 unsigned long lastTime = 0;
 unsigned long timerDelay = 1000;
@@ -63,7 +63,7 @@ void loop() {
   
   Serial.println();
   printValues();
-  delay(1000);
+  delay(10000);
 
   if ((millis() - lastTime) > timerDelay) {
     if(WiFi.status()== WL_CONNECTED){
@@ -71,7 +71,7 @@ void loop() {
     
       http.begin(serverName);
 
-      http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      http.addHeader("Content-Type", "application/json");
       String httpRequestData = construct_post_request();
       Serial.println(httpRequestData);
       int httpResponseCode = http.POST(httpRequestData);
@@ -164,11 +164,13 @@ void connect_wifi() {
 String construct_post_request() {
   StaticJsonDocument<200> data;
 
-  data["temp"] = bme.readTemperature();
-  data["humid"] = bme.readHumidity();
+  data["temperature"] = bme.readTemperature();
+  data["humidity"] = bme.readHumidity();
   data["pressure"] = bme.readPressure() / 100.0F;
-  data["lumen"] = lightMeter.readLightLevel();
+  data["light"] = lightMeter.readLightLevel();
   data["moisture"] = readSoil();
+  data["slave_ip"] = WiFi.localIP();
+  data["author"] = 1;
 
   String requestBody;
   serializeJson(data, requestBody);

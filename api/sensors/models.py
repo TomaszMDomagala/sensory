@@ -15,7 +15,7 @@ class Sensors(models.Model):
 
     date_time = models.DateTimeField(auto_now=True)
     slave_ip = models.GenericIPAddressField(blank=True, null=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
 
     # def __str__(self):
     #     return self.id
