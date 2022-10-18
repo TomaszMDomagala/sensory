@@ -2,10 +2,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
+
 from .models import Sensors
 from .serializers import SensorsSerializer
+from .forms import ParametersSearchForm
+from .utils import get_chart
+
 from django.views.generic.list import ListView
 from django.utils import timezone
+from django.shortcuts import render
+
+import pandas as pd
+
+# https://www.section.io/engineering-education/representing-data-in-django-using-matplotlib/
 
 
 class SensorsView(ListView):
@@ -16,6 +25,44 @@ class SensorsView(ListView):
         context = super().get_context_data(**kwargs)
         context['now'] = timezone.now()
         return context
+
+
+def parameters(request):
+    parameters_df = None
+    chart = None
+    no_data = None
+    search_form = ParametersSearchForm(request.POST or None)
+
+    if request.method == 'POST':
+        date_from   = request.POST.get('date_from')
+        date_to     = request.POST.get('date_to')
+        chart_type  = request.POST.get('chart_type')
+        results_by  = request.POST.get('results_by')
+        
+        print(date_from, date_to, chart_type)
+
+        parameters_qs = Sensors.objects.filter(date_time__date__lte=date_to, date_time__date__gte=date_from)
+
+        if len(parameters_qs) > 0:
+            parameters_df = pd.DataFrame(parameters_qs.values())
+            print(parameters_df)
+
+            parameters_df['created'] = parameters_df['created'].apply(lambda x: x.strftime('%d/%m/%Y'))
+            # sales_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1,
+            #                 inplace=True)
+
+            chart           = get_chart(chart_type, parameters_df, results_by)
+            parameters_df   = parameters_df.to_html()
+
+        else:
+            messages.warning(request, "Apparently no data available...")
+
+    context = {
+        'search_form': search_form,
+        'parameters_sf': parameters_df,
+        'chart': chart,
+    }
+    return render(request, 'sensors/parameters.html', context)
 
 
 class SensorsListApiView(APIView):

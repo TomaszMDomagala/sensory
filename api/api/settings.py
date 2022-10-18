@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'social_django',
     'rest_framework',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -104,3 +105,4 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
