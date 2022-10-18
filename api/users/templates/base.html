@@ -1,13 +1,18 @@
-<style>
-    label, input {
-        display: block;
-    }
-    span.helptext {
-        display: none;
-    }
-</style>
+{% load static %}
 
-<h1>Welcome to Awesome Website</h1>
-
-{% block content %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="{% static 'users/style.css' %}" />
+        <title>Sensors</title>
+    </head>
+    <body>
+        <div class="header">
+            <a class="main_title" href="{% url 'main' %}">Sensors</a>
+        </div>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>

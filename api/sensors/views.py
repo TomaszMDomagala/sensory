@@ -4,6 +4,19 @@ from rest_framework import status
 from rest_framework import permissions
 from .models import Sensors
 from .serializers import SensorsSerializer
+from django.views.generic.list import ListView
+from django.utils import timezone
+
+
+class SensorsView(ListView):
+    
+    model = Sensors
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['now'] = timezone.now()
+        return context
+
 
 class SensorsListApiView(APIView):
 
