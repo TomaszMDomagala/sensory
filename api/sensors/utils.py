@@ -2,22 +2,18 @@ import uuid, base64
 from .models import *
 from io import BytesIO
 from matplotlib import pyplot
+from .forms import (
+    CHART_CHOICES,
+    RESULTS_CHOICES
+        )
 
 
 def generate_code():
     return str(uuid.uuid4()).replace('-', '').upper()[:12]
 
-    
+
 def get_key(res_by):
-    if res_by == '#1':
-        key = 'transaction_id'
-    elif res_by == '#2':
-        key = 'created'
-    elif res_by == '#3':
-        key = 'customer'
-    elif res_by == '#4':
-        key = 'total_price'
-    return key
+    return dict(RESULTS_CHOICES)[res_by].lower()
 
 
 def get_graph():
@@ -35,16 +31,14 @@ def get_chart(chart_type, data, results_by, **kwargs):
     pyplot.switch_backend('AGG')
     fig = pyplot.figure(figsize=(10, 4))
     key = get_key(results_by)
-    d = data.groupby(key, as_index=False)['total_price'].agg('sum')
+    d = data.groupby(key, as_index=False)['date_time'].agg('sum')
+
     if chart_type == '#1':
-        print("Bar graph")
-        pyplot.bar(d[key], d['total_price'])
+        pyplot.bar(d[key], d['date_time'])
     elif chart_type == '#2':
-        print("Pie chart")
-        pyplot.pie(data=d,x='total_price', labels=d[key])
+        pyplot.pie(data=d,x='date_time', labels=d[key])
     elif chart_type == '#3':
-        print("Line graph")
-        pyplot.plot(d[key], d['total_price'], color='gray', marker='o', linestyle='dashed')
+        pyplot.plot(d[key], d['date_time'], color='gray', marker='o', linestyle='dashed')
     else:
         print("Apparently...chart_type not identified")
     pyplot.tight_layout()
