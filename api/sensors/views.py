@@ -47,7 +47,7 @@ def parameters(request):
             parameters_df = pd.DataFrame(parameters_qs.values())
             # print(parameters_df)
 
-            parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime('%d/%m/%Y'))
+            parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime('%d/%m/%Y %I:%M:%S'))
             # sales_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1,
             #                 inplace=True)
 
@@ -59,10 +59,10 @@ def parameters(request):
 
     context = {
         'search_form': search_form,
-        'parameters_sf': parameters_df,
+        'parameters_df': parameters_df,
         'chart': chart,
     }
-    return render(request, 'sensors/parameters.html', context)
+    return render(request, 'sensors/charts.html', context)
 
 
 class SensorsListApiView(APIView):

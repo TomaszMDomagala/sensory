@@ -9,5 +9,5 @@ from .views import (
 urlpatterns = [
     path('api', SensorsListApiView.as_view()),
     path('', SensorsView.as_view(), name="main"),
-    path('charts', parameters, name='parameters')
+    path('charts', parameters, name='charts')
 ]
