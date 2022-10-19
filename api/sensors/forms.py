@@ -18,7 +18,7 @@ RESULTS_CHOICES = (
 
 class ParametersSearchForm(forms.Form):
     date_from   = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'date'}))
-    data_to     = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'date'}))
+    date_to     = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'date'}))
     chart_type  = forms.ChoiceField(choices=CHART_CHOICES)
     results_by  = forms.ChoiceField(choices=RESULTS_CHOICES)
     

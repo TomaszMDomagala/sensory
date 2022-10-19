@@ -28,9 +28,9 @@ class SensorsView(ListView):
 
 
 def parameters(request):
-    parameters_df = None
-    chart = None
-    no_data = None
+    parameters_df   = None
+    chart           = None
+    no_data         = None
     search_form = ParametersSearchForm(request.POST or None)
 
     if request.method == 'POST':
@@ -45,9 +45,9 @@ def parameters(request):
 
         if len(parameters_qs) > 0:
             parameters_df = pd.DataFrame(parameters_qs.values())
-            print(parameters_df)
+            # print(parameters_df)
 
-            parameters_df['created'] = parameters_df['created'].apply(lambda x: x.strftime('%d/%m/%Y'))
+            parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime('%d/%m/%Y'))
             # sales_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1,
             #                 inplace=True)
 
@@ -72,16 +72,15 @@ class SensorsListApiView(APIView):
         serializer = SensorsSerializer(sensors, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     def post(self, request, *args, **kwargs):
         data = {
-            'temperature': round(request.data.get('temperature'), 2),
-            'humidity': round(request.data.get('humidity'), 2),
-            'pressure': round(request.data.get('pressure'), 2),
-            'light': round(request.data.get('light'), 2),
-            'moisture': request.data.get('moisture'),
-            'slave_ip': request.data.get('slave_ip')
-            # 'author': request.data.get('author')
+            'temperature':  round(request.data.get('temperature'), 2),
+            'humidity':     round(request.data.get('humidity'), 2),
+            'pressure':     round(request.data.get('pressure'), 2),
+            'light':        round(request.data.get('light'), 2),
+            'moisture':     request.data.get('moisture'),
+            'slave_ip':     request.data.get('slave_ip')
+            # 'author':     request.data.get('author')
         }
         serializer = SensorsSerializer(data=data)
         if serializer.is_valid():
