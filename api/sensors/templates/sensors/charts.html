@@ -18,10 +18,9 @@ Home
     </form>
     <hr>
     {% if parameters_df %}
-        <b>Sales Dataframe</b>
         {{parameters_df|safe}}
         <hr>
         <hr>
-        <b>Chart</b>
+        <img src="data:image/png;base64, {{chart|safe}}" alt="" id="img">
     {% endif %}<br>
 {% endblock content %}

@@ -3,8 +3,7 @@ from django import forms
 
 CHART_CHOICES = (
     ('#1', 'Bar Graph'),
-    ('#2', 'Pie Chart'),
-    ('#3', 'Line Graph')
+    ('#2', 'Line Graph')
 )
 
 RESULTS_CHOICES = (

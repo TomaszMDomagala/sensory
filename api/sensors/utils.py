@@ -2,6 +2,8 @@ import uuid, base64
 from .models import *
 from io import BytesIO
 from matplotlib import pyplot
+import pandas as pd
+import datetime
 from .forms import (
     CHART_CHOICES,
     RESULTS_CHOICES
@@ -36,12 +38,16 @@ def get_chart(chart_type, data, results_by, **kwargs):
     if chart_type == '#1':
         pyplot.bar(d['date_time'], d[key])
     elif chart_type == '#2':
-        pyplot.pie(data=d,x='date_time', labels=d[key])
-    elif chart_type == '#3':
         pyplot.plot(d['date_time'], d[key], color='gray', marker='o', linestyle='dashed')
-        pyplot.savefig('chart.png')
     else:
         print("Apparently...chart_type not identified")
     pyplot.tight_layout()
     chart = get_graph()
     return chart
+
+
+def apply_scale(data):
+    # head = datetime.strptime(data.head(1)['date_time'], "")
+
+
+    return '%d/%m/%Y %I:%M:%S'

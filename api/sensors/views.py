@@ -6,7 +6,7 @@ from rest_framework import permissions
 from .models import Sensors
 from .serializers import SensorsSerializer
 from .forms import ParametersSearchForm
-from .utils import get_chart
+from .utils import get_chart, apply_scale
 
 from django.views.generic.list import ListView
 from django.utils import timezone
@@ -38,18 +38,16 @@ def parameters(request):
         date_to     = request.POST.get('date_to')
         chart_type  = request.POST.get('chart_type')
         results_by  = request.POST.get('results_by')
-        
-        print(date_from, date_to, chart_type)
 
         parameters_qs = Sensors.objects.filter(date_time__date__lte=date_to, date_time__date__gte=date_from)
 
         if len(parameters_qs) > 0:
             parameters_df = pd.DataFrame(parameters_qs.values())
-            # print(parameters_df)
+            time_span = apply_scale(parameters_df)
 
-            parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime('%d/%m/%Y %I:%M:%S'))
-            # sales_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1,
-            #                 inplace=True)
+            parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime(time_span))
+            parameters_df.drop(['id', 'slave_ip', 'author_id'], axis=1, inplace=True)
+            # parameters_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1, inplace=True)
 
             chart           = get_chart(chart_type, parameters_df, results_by)
             parameters_df   = parameters_df.to_html()
