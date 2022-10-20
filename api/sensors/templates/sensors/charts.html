@@ -31,10 +31,12 @@
         </div>
     </form>
 
-    <div>
-    {% if parameters_df %}
-        <div class="">{{ parameters_df|safe }}</div>
-        <img src="data:image/png;base64, {{chart|safe}}" alt="" id="img">
-    {% endif %}
+    <div class="container">
+        {% if parameters_df %}
+            <div class="col">{{ parameters_df|safe }}</div>
+            <div class="col">
+                <img src="data:image/png;base64, {{chart|safe}}" alt="" id="img">
+            </div>
+        {% endif %}
     </div>
 {% endblock content %}
