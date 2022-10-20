@@ -8,13 +8,11 @@ from .serializers import SensorsSerializer
 from .forms import ParametersSearchForm
 from .utils import get_chart, apply_scale
 
-from django.views.generic.list import ListView
+from django.views.generic import ListView, View
 from django.utils import timezone
 from django.shortcuts import render
 
 import pandas as pd
-
-# https://www.section.io/engineering-education/representing-data-in-django-using-matplotlib/
 
 
 class SensorsView(ListView):
@@ -27,40 +25,43 @@ class SensorsView(ListView):
         return context
 
 
-def parameters(request):
-    parameters_df   = None
-    chart           = None
-    no_data         = None
-    search_form = ParametersSearchForm(request.POST or None)
+class ChartView(View):
 
-    if request.method == 'POST':
-        date_from   = request.POST.get('date_from')
-        date_to     = request.POST.get('date_to')
-        chart_type  = request.POST.get('chart_type')
-        results_by  = request.POST.get('results_by')
+    def get(self, request, *args, **kwargs):
+        parameters_df   = None
+        chart           = None
+        no_data         = None
+        search_form = ParametersSearchForm(request.POST or None)
 
-        parameters_qs = Sensors.objects.filter(date_time__date__lte=date_to, date_time__date__gte=date_from)
+        if request.method == 'POST':
+            date_from   = request.POST.get('date_from')
+            date_to     = request.POST.get('date_to')
+            chart_type  = request.POST.get('chart_type')
+            results_by  = request.POST.get('results_by')
 
-        if len(parameters_qs) > 0:
-            parameters_df = pd.DataFrame(parameters_qs.values())
-            time_span = apply_scale(parameters_df)
+            parameters_qs = Sensors.objects.filter(date_time__date__lte=date_to, date_time__date__gte=date_from)
 
-            parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime(time_span))
-            parameters_df.drop(['id', 'slave_ip', 'author_id'], axis=1, inplace=True)
-            # parameters_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1, inplace=True)
+            if len(parameters_qs) > 0:
+                parameters_df = pd.DataFrame(parameters_qs.values())
+                time_span = apply_scale(parameters_df)
 
-            chart           = get_chart(chart_type, parameters_df, results_by)
-            parameters_df   = parameters_df.to_html()
+                parameters_df['date_time'] = parameters_df['date_time'].apply(lambda x: x.strftime(time_span))
+                parameters_df.drop(['id', 'slave_ip', 'author_id'], axis=1, inplace=True)
+                # parameters_df.rename({'customer_id': 'customer', 'salesman_id': 'salesman', 'id': 'sales_id'}, axis=1, inplace=True)
 
-        else:
-            messages.warning(request, "Apparently no data available...")
+                chart           = get_chart(chart_type, parameters_df, results_by)
+                parameters_df   = parameters_df.to_html()
 
-    context = {
-        'search_form': search_form,
-        'parameters_df': parameters_df,
-        'chart': chart,
-    }
-    return render(request, 'sensors/charts.html', context)
+            else:
+                messages.warning(request, "Apparently no data available...")
+
+        context = {
+            'search_form': search_form,
+            'parameters_df': parameters_df,
+            'chart': chart,
+        }
+
+        return render(request, 'sensors/charts.html', context)
 
 
 class SensorsListApiView(APIView):
